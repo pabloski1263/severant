@@ -31,7 +31,7 @@ export default function Workflow() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="workflow" className="py-24 border-t border-gray-800 bg-gray-900/30">
+    <section id="workflow" className="py-24 border-t border-gray-800 bg-gray-900/30 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
