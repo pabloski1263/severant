@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { Pool } from "pg";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,26 +33,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { error } = await supabase.from("contacts").insert({
-      nombre,
-      correo,
-      empresa: empresa || null,
-      mensaje,
-    });
-
-    if (error) {
-      console.error("Error saving contact:", error);
-      return NextResponse.json(
-        { success: false, message: "Error del servidor. Por favor intenta nuevamente." },
-        { status: 500 }
-      );
-    }
+    await pool.query(
+      `INSERT INTO contacts (nombre, correo, empresa, mensaje, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, NOW(), NOW())`,
+      [nombre, correo, empresa || null, mensaje]
+    );
 
     return NextResponse.json({
       success: true,
       message: "¡Mensaje enviado correctamente! Te contactaremos pronto.",
     });
-  } catch {
+  } catch (error) {
+    console.error("Error saving contact:", error);
     return NextResponse.json(
       { success: false, message: "Error del servidor. Por favor intenta nuevamente." },
       { status: 500 }
