@@ -74,7 +74,6 @@ html {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: gradient-shift 3s ease infinite;
-  filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.3));
 }
 
 /* White Text with Glow */
